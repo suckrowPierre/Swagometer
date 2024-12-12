@@ -18,11 +18,44 @@
         autoplay
         playsinline
         muted
-        class="absolute top-0 left-0 w-full h-full object-cover -z-10"
+        class="absolute top-0 left-0 w-full h-full object-cover z-[-10] transform scale-x-[-1]"
     ></video>
+    <canvas id="snapshot" class="hidden absolute top-0 left-0 w-full h-full object-cover z-[-10] transform scale-x-[-1]"></canvas>
 
-    <div class="text-white text-center font-bold text-2xl flex items-center justify-center h-full">
-        You have 0% Swag
-    </div>
+        <div class="text-white text-center font-bold text-2xl flex items-center justify-center h-full flex-col" onclick="clickScreen()" ontouchstart="clickScreen()">
+            <p id="initial-text" class="screen-text">
+                Tap screen to measure your swag
+            </p>
+            <p id="instruction-text" class="screen-text hidden">
+                Take a step back and strike a pose. <br/> <br/> Show your whole body in the frame.
+            </p>
+            <p id="count-down-1" class="screen-text count-down-text text-4xl hidden">
+                3
+            </p>
+            <p id="count-down-2" class="screen-text count-down-text text-4xl hidden">
+                2
+            </p>
+            <p id="count-down-3" class="screen-text count-down-text text-4xl hidden">
+                1
+            </p>
+            <p id="processing-1" class="screen-text processing-text hidden">
+                Processing
+            </p>
+            <p id="processing-2" class="screen-text processing-text hidden">
+                Processing.
+            </p>
+            <p id="processing-3" class="screen-text processing-text hidden">
+                Processing..
+            </p>
+            <p id="processing-4" class="screen-text processing-text hidden">
+                Processing...
+            </p>
+            <p id="error-text" class="screen-text hidden">
+                Error please try again
+            </p>
+            <span id="swag-response" class="screen-text hidden">
+                You have <span id="swag-score">0</span> swag
+            </span>
+        </div>
 </body>
 </html>
