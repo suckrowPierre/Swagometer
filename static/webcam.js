@@ -19,9 +19,10 @@ function showVideo() {
 }
 
 function captureFrame() {
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvas.width, canvas.height);
     canvas.classList.remove("hidden");
 }
+
 
 function getShownScreenTextElement() {
     return document.querySelector(".screen-text:not(.hidden)")
@@ -142,37 +143,50 @@ async function clickScreen() {
 }
 
 function initCanvas() {
-    // get video dimensions
-    const width = video.offsetWidth;
-    const height = video.offsetHeight
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+
     canvas.width = width;
     canvas.height = height;
 }
 
+
 function initWebcam() {
-    video.controls = false;
+
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: "user",
-            }
-        })
-        .then((stream) => {
-            video.srcObject = stream;
-        })
-        .catch((err) => {
-            alert("Error accessing webcam:" + err);
-        });
+        // Request permission and enumerate devices
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(() => navigator.mediaDevices.enumerateDevices())
+            .then((devices) => {
+                const videoDevices = devices.filter(device => device.kind === "videoinput");
+
+                if (videoDevices.length > 0) {
+                    const lastCamera = videoDevices[videoDevices.length - 2];
+
+                    return navigator.mediaDevices.getUserMedia({
+                        video: { deviceId: { exact: lastCamera.deviceId } }
+                    });
+                } else {
+                    throw new Error("No video input devices found.");
+                }
+            })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch((err) => {
+                console.error("Error accessing the webcam:", err);
+            });
     } else {
         alert("Webcam not supported by this browser.");
     }
-
 }
+
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
     initWebcam();
-    initCanvas();
+    video.addEventListener("loadedmetadata", initCanvas);
     window.clickScreen = clickScreen;
 });
